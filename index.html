@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Hitster Spotify Test</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        .container {
+            width: min(90%, 500px);
+            padding: 30px;
+
+            background: white;
+            border-radius: 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 28px;
+        }
+
+        .description {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        #status {
+            margin: 25px 0;
+            padding: 15px;
+
+            border-radius: 10px;
+            background: #f0f0f0;
+
+            font-weight: bold;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #1DB954;
+            color: white;
+
+            font-size: 18px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .info {
+            margin-top: 25px;
+            padding: 15px;
+
+            background: #fafafa;
+            border-radius: 10px;
+
+            font-size: 14px;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .step {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🎵 Hitster Test</h1>
+
+    <p class="description">
+        Spotifyの自動再生テストです。<br>
+        まずはボタンを1回押してください。
+    </p>
+
+    <div id="status">
+        準備完了
+    </div>
+
+    <button id="playButton">
+        Spotifyを再生
+    </button>
+
+    <div class="info">
+
+        <div class="step">
+            ① Spotifyを開く
+        </div>
+
+        <div class="step">
+            ↓
+        </div>
+
+        <div class="step">
+            ② 少し待つ
+        </div>
+
+        <div class="step">
+            ↓
+        </div>
+
+        <div class="step">
+            ③ もう一度Spotifyを開く
+        </div>
+
+        <div class="step">
+            ↓
+        </div>
+
+        <div class="step">
+            🎵 再生
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+     * ==========================================
+     * Spotify設定
+     * ==========================================
+     */
+
+    const spotifyUrl =
+        "https://open.spotify.com/intl-ja/track/6JpqwdFajjlWIWJ4QD6zBd?si=0a18e0c6702b4e34";
+
+
+    /*
+     * ==========================================
+     * HTML要素
+     * ==========================================
+     */
+
+    const status =
+        document.getElementById("status");
+
+    const playButton =
+        document.getElementById("playButton");
+
+
+    /*
+     * ==========================================
+     * Spotify再生処理
+     * ==========================================
+     */
+
+    playButton.addEventListener("click", () => {
+
+        startSpotify();
+
+    });
+
+
+    function startSpotify() {
+
+        /*
+         * ボタンを無効化
+         */
+
+        playButton.disabled = true;
+
+
+        /*
+         * 1回目
+         */
+
+        status.textContent =
+            "① Spotifyを開いています...";
+
+
+        openSpotify();
+
+
+        /*
+         * 1.5秒後に2回目
+         */
+
+        setTimeout(() => {
+
+            status.textContent =
+                "② Spotifyをもう一度開いています...";
+
+
+            openSpotify();
+
+
+        }, 1500);
+
+
+        /*
+         * 3秒後
+         */
+
+        setTimeout(() => {
+
+            status.textContent =
+                "🎵 再生処理を完了しました";
+
+
+            playButton.disabled = false;
+
+
+        }, 3000);
+
+    }
+
+
+    /*
+     * ==========================================
+     * Spotifyを開く
+     * ==========================================
+     */
+
+    function openSpotify() {
+
+        console.log(
+            "Spotifyを開く:",
+            spotifyUrl
+        );
+
+
+        window.location.href =
+            spotifyUrl;
+
+    }
+
+</script>
+
+</body>
+</html>
