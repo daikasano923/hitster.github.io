@@ -1,0 +1,22 @@
+{
+    "001": {
+        "spotify": "spotify:track:6JpqwdFajjlWIWJ4QD6zBd",
+        "title": "沈丁花",
+        "artist": "DISH//",
+        "year": 2021
+    },
+
+    "002": {
+        "spotify": "spotify:track:AAAAAAAAAAAAAAAA",
+        "title": "2曲目",
+        "artist": "アーティスト2",
+        "year": 2015
+    },
+
+    "003": {
+        "spotify": "spotify:track:BBBBBBBBBBBBBBBB",
+        "title": "3曲目",
+        "artist": "アーティスト3",
+        "year": 2010
+    }
+}
