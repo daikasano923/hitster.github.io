@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -8,15 +10,17 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Hitster Spotify URI Test</title>
+    <title>Hitster</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
+
             min-height: 100vh;
 
             display: flex;
@@ -30,34 +34,33 @@
                 sans-serif;
 
             background: #f5f5f5;
+
             color: #222;
         }
 
         .container {
             width: min(90%, 500px);
+
             padding: 30px;
 
             background: white;
+
             border-radius: 20px;
 
             text-align: center;
 
             box-shadow:
-                0 10px 30px rgba(0, 0, 0, 0.1);
+                0 10px 30px
+                rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             margin-top: 0;
-            font-size: 28px;
-        }
-
-        .description {
-            color: #666;
-            line-height: 1.7;
         }
 
         #status {
             margin: 25px 0;
+
             padding: 15px;
 
             border-radius: 10px;
@@ -67,87 +70,48 @@
             font-weight: bold;
         }
 
-        button {
-            width: 100%;
-            padding: 18px;
-
-            border: none;
-            border-radius: 12px;
-
-            background: #1DB954;
-            color: white;
-
-            font-size: 18px;
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        button:disabled {
-            background: #999;
-            cursor: not-allowed;
-        }
-
-        .info {
-            margin-top: 25px;
-            padding: 15px;
-
-            background: #fafafa;
-            border-radius: 10px;
-
-            font-size: 13px;
-            color: #666;
-
-            line-height: 1.7;
-
-            word-break: break-all;
-        }
-
-        .success {
-            background: #e8f5e9 !important;
-            color: #1b5e20;
-        }
-
         .error {
             background: #ffebee !important;
             color: #b71c1c;
         }
+
+        .info {
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background: #fafafa;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            color: #666;
+
+            word-break: break-all;
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-    <h1>🎵 Hitster Test</h1>
-
-    <p class="description">
-        Spotify URIを使った<br>
-        自動2段階起動テスト
-    </p>
+    <h1>🎵 Hitster</h1>
 
     <div id="status">
-        準備完了
+        曲情報を読み込んでいます...
     </div>
 
-    <button id="playButton">
-        Spotifyを再生
-    </button>
-
-    <div class="info">
-
-        <strong>Spotify URI</strong>
-
-        <br>
-
-        <span>
-            spotify:track:6JpqwdFajjlWIWJ4QD6zBd
-        </span>
-
+    <div
+        id="info"
+        class="info"
+    >
+        カード情報を取得中...
     </div>
 
 </div>
@@ -155,112 +119,244 @@
 
 <script>
 
-    /*
-     * ==========================================
-     * Spotify URI
-     * ==========================================
-     */
 
-    const spotifyUri =
-        "spotify:track:6JpqwdFajjlWIWJ4QD6zBd";
+/*
+ * ==========================================
+ * 要素
+ * ==========================================
+ */
 
+const status =
+    document.getElementById("status");
 
-    /*
-     * ==========================================
-     * HTML要素
-     * ==========================================
-     */
-
-    const status =
-        document.getElementById("status");
-
-    const playButton =
-        document.getElementById("playButton");
+const info =
+    document.getElementById("info");
 
 
-    /*
-     * ==========================================
-     * ボタン
-     * ==========================================
-     */
 
-    playButton.addEventListener(
-        "click",
-        startSpotify
+/*
+ * ==========================================
+ * URLからカードIDを取得
+ *
+ * 例：
+ * ?id=001
+ *
+ * ==========================================
+ */
+
+const params =
+    new URLSearchParams(
+        window.location.search
     );
 
+const cardId =
+    params.get("id");
+
+
+
+/*
+ * ==========================================
+ * 起動
+ * ==========================================
+ */
+
+start();
+
+
+
+/*
+ * ==========================================
+ * メイン処理
+ * ==========================================
+ */
+
+async function start() {
 
     /*
-     * ==========================================
-     * Spotify開始
-     * ==========================================
+     * カードIDがない
      */
 
-    function startSpotify() {
+    if (!cardId) {
 
-        playButton.disabled = true;
+        showError(
+            "カードIDがありません"
+        );
 
-        /*
-         * ① 1回目
-         */
-
-        status.textContent =
-            "① Spotifyアプリを起動しています...";
-
-        openSpotify();
-
-
-        /*
-         * ② 1.5秒後
-         */
-
-        setTimeout(() => {
-
-            status.textContent =
-                "② Spotifyをもう一度起動しています...";
-
-            openSpotify();
-
-        }, 1500);
-
-
-        /*
-         * ③ 3秒後
-         */
-
-        setTimeout(() => {
-
-            status.textContent =
-                "🎵 2段階処理を終了しました";
-
-            status.classList.add("success");
-
-            playButton.disabled = false;
-
-        }, 3000);
-
+        return;
     }
 
 
     /*
-     * ==========================================
-     * Spotify URIを開く
-     * ==========================================
+     * JSONを取得
      */
 
-    function openSpotify() {
+    try {
 
-        console.log(
-            "Spotify URI:",
-            spotifyUri
+        const response =
+            await fetch(
+                "./songs.json"
+            );
+
+
+        /*
+         * JSON取得失敗
+         */
+
+        if (!response.ok) {
+
+            throw new Error(
+                "songs.jsonを読み込めませんでした"
+            );
+
+        }
+
+
+        /*
+         * JSONを解析
+         */
+
+        const songs =
+            await response.json();
+
+
+        /*
+         * カードを取得
+         */
+
+        const song =
+            songs[cardId];
+
+
+        /*
+         * カードが存在しない
+         */
+
+        if (!song) {
+
+            showError(
+                "カードID「"
+                + cardId
+                + "」の曲が見つかりません"
+            );
+
+            return;
+        }
+
+
+        /*
+         * 情報表示
+         */
+
+        info.innerHTML = `
+            カードID：${cardId}<br>
+            再生準備中...
+        `;
+
+
+        /*
+         * Spotify再生
+         */
+
+        playSpotify(
+            song.spotify
         );
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showError(
+            "曲情報の読み込みに失敗しました"
+        );
+
+    }
+
+}
+
+
+
+/*
+ * ==========================================
+ * Spotify再生
+ * ==========================================
+ */
+
+function playSpotify(
+    spotifyUri
+) {
+
+    /*
+     * ① 1回目
+     */
+
+    status.textContent =
+        "Spotifyを起動しています...";
+
+
+    window.location.href =
+        spotifyUri;
+
+
+
+    /*
+     * ② 1.5秒後
+     */
+
+    setTimeout(() => {
+
+        status.textContent =
+            "Spotifyを再生しています...";
+
 
         window.location.href =
             spotifyUri;
 
-    }
+    }, 1500);
+
+
+
+    /*
+     * 完了表示
+     */
+
+    setTimeout(() => {
+
+        status.textContent =
+            "🎵 再生処理を実行しました";
+
+    }, 3000);
+
+}
+
+
+
+/*
+ * ==========================================
+ * エラー表示
+ * ==========================================
+ */
+
+function showError(
+    message
+) {
+
+    status.textContent =
+        "エラー";
+
+    status.classList.add(
+        "error"
+    );
+
+    info.textContent =
+        message;
+
+}
 
 </script>
 
+
 </body>
+
 </html>
